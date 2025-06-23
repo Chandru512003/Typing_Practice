@@ -3,146 +3,232 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Word & Letter Counter</title>
+  <title>Typing Practice Test</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     body {
-      background-color: rgb(99, 97, 232);
-      color: aliceblue;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: white;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
+      min-height: 100vh;
     }
 
-    h1 {
-      font-size: 1.8rem;
+    .timer {
       margin-top: 20px;
-      text-align: center;
-      color: #fff;
+      background-color: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     }
 
     .container {
-      background-color: #ffffff;
-      color: black;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 20px;
       width: 90%;
       max-width: 600px;
-      padding: 20px;
-      border-radius: 10px;
-      margin-top: 30px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      padding: 30px;
+      margin: 40px 0;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+      text-align: center;
+      font-weight: 600;
+      font-size: 2rem;
+      margin-bottom: 10px;
     }
 
     h2 {
+      text-align: center;
+      font-weight: 400;
       font-size: 1rem;
       margin-bottom: 20px;
+      color: #e0e0e0;
+    }
+
+    .time-input {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .time-input input[type="number"] {
+      padding: 10px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      width: 60px;
       text-align: center;
-      color: #333;
+      margin: 0 10px;
+    }
+
+    .time-label {
+      color: #fff;
+      font-weight: 500;
     }
 
     #textarea {
+      resize: vertical;
       width: 100%;
       min-height: 120px;
-      padding: 10px;
-      resize: vertical;
+      padding: 15px;
       font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      margin-bottom: 15px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      opacity: 0.6;
+      pointer-events: none;
+      transition: all 0.3s ease-in-out;
+    }
+
+    #textarea.active {
+      opacity: 1;
+      pointer-events: auto;
     }
 
     .button {
-      background-color: #007bff;
-      color: white;
+      margin-top: 15px;
+      background-color: #ffffffcc;
+      color: #2c3e50;
       border: none;
-      padding: 10px 20px;
+      padding: 12px 20px;
       font-size: 1rem;
-      border-radius: 6px;
+      border-radius: 15px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      width: 100%;
     }
 
     .button:hover {
-      background-color: #0056b3;
+      background-color: #ffffffee;
     }
 
     #Count {
       margin-top: 20px;
-      padding: 15px;
-      background-color: #f0f8ff;
-      color: #000;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      width: 100%;
-      text-align: center;
-      display: none;
+      padding: 20px;
+      background-color: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
       white-space: pre-wrap;
       word-wrap: break-word;
+      display: none;
     }
 
-    /* Responsive adjustments */
     @media (max-width: 600px) {
-      h1 {
-        font-size: 1.4rem;
-      }
-
       .container {
-        padding: 15px;
+        padding: 20px;
       }
 
-      #textarea {
-        font-size: 0.95rem;
+      .time-input {
+        flex-direction: column;
+        align-items: center;
       }
 
-      .button {
-        width: 100%;
-        font-size: 1rem;
+      .time-input input[type="number"] {
+        margin: 10px 0;
       }
     }
   </style>
 </head>
 <body>
 
-  <h1>Words and Letters Counter</h1>
+  <!-- Timer -->
+  <div class="timer" id="timer">Time: 3:00</div>
 
+  <h1>⌨ Typing Practice Test</h1>
   <div class="container">
-    <h2>Type a paragraph and click "Count" to get the number of words and letters.</h2>
-    <textarea id="textarea" placeholder="Type here..."></textarea>
-    <button onclick="wordcount()" class="button">Count</button>
+    <h2>Enter custom time in minutes and start practicing!</h2>
+
+    <!-- Time Selection -->
+    <div class="time-input">
+      <span class="time-label">Practice Time:</span>
+      <input type="number" id="customMinutes" placeholder="3" min="1" value="3" />
+      <span class="time-label">minutes</span>
+    </div>
+
+    <textarea id="textarea" placeholder="Type your text here..."></textarea>
+    <button onclick="startTest()" class="button">▶ Start Typing</button>
     <div id="Count"></div>
   </div>
 
   <script>
-    function wordcount() {
-      let input = document.getElementById("textarea").value.trim();
+    let timerInterval;
+    let totalSeconds = 180;
 
-      if (input === "") {
-        const output = document.getElementById("Count");
-        output.style.display = "block";
-        output.innerHTML = `<span style="color: Red; font-weight: bold;">Please enter some text.</span>`;
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    function startTest() {
+      const minutes = parseInt(document.getElementById("customMinutes").value);
+      if (!minutes || minutes <= 0) {
+        alert("Please enter a valid number of minutes.");
         return;
       }
 
-      // Count words by splitting on whitespace and filtering empty strings
-      const wordCount = input.split(/\s+/).filter(Boolean).length;
+      totalSeconds = minutes * 60;
+      document.getElementById("textarea").value = '';
+      document.getElementById("textarea").focus();
+      document.getElementById("textarea").classList.add("active");
+      document.getElementById("textarea").removeAttribute("disabled");
+      document.getElementById("Count").style.display = "none";
 
-      // Count letters (excluding spaces)
-      const letterCount = input.replace(/\s+/g, '').length;
+      clearInterval(timerInterval);
 
-      const output = document.getElementById("Count");
-      output.style.display = "block";
-      output.innerHTML = `"${input}"
-has <span style="font-weight:bold;">${wordCount} Words</span> and <span style="font-weight:bold;">${letterCount} Letters.</span>`;
+      timerInterval = setInterval(() => {
+        totalSeconds--;
+        document.getElementById("timer").textContent = `Time: ${formatTime(totalSeconds)}`;
+
+        if (totalSeconds <= 0) {
+          clearInterval(timerInterval);
+          endTest();
+        }
+      }, 1000);
+    }
+
+    function endTest() {
+      document.getElementById("textarea").classList.remove("active");
+      document.getElementById("textarea").setAttribute("disabled", true);
+
+      const text = document.getElementById("textarea").value.trim();
+      const outputDiv = document.getElementById("Count");
+
+      if (!text) {
+        outputDiv.style.display = "block";
+        outputDiv.innerHTML = `<span style="color: red; font-weight:bold;">You typed nothing. Try again!</span>`;
+        return;
+      }
+
+      const wordsTyped = text.split(/\s+/).filter(Boolean).length;
+      const lettersTyped = text.replace(/\s+/g, '').length;
+      const wpm = Math.round(wordsTyped / (parseInt(document.getElementById("customMinutes").value)));
+
+      outputDiv.style.display = "block";
+      outputDiv.innerHTML = `
+        <p><strong>You typed:</strong></p>
+        "<em>${text}</em>"
+        <br/><br/>
+        <strong>${wordsTyped} Words</strong>, <strong>${lettersTyped} Letters</strong><br/>
+        <strong>Typing Speed:</strong> ${wpm} WPM<br/>
+      `;
     }
   </script>
-
 </body>
 </html>
